@@ -1,40 +1,57 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request
+from flask_restful import Resource, Api
 
 # Using __name__ we give a unique name to our Flask app
 app = Flask(__name__)
 
+# Make the development process easier
+api = Api(app)
+
+# The payer storage
 payers = []
 
 
-@app.route('/payer', methods=['GET'])
-def get_payers():
-    return jsonify(payers)
+# Resource: Represents Entities
+class Payer(Resource):
+    def post(self):
+        payers.append(request.get_json())
+        return request.get_json(), 201
 
 
-@app.route('/payer/<int:payer_id>', methods=['GET'])
-def validate_payer(payer_id):
-    for payer in payers:
-        if payer['payer_id'] == payer_id:
-            return jsonify(payer)
-        else:
-            return f'Payer {payer_id} not found'
+class PayerModify(Resource):
+    def get(self, payer_id):
+        for payer in payers:
+            if payer['payer_id'] == payer_id:
+                return payer
+            else:
+                return {'payer_id': None}, 404
+
+    def put(self, payer_id):
+        payer_id = request.get_json()['payer_id']
+        for payer in payers:
+            if payer['payer_id'] == payer_id:
+                payers.remove(payer)
+                payers.append(payer)
+                return {'payer_id': payer_id, 'updated': True}, 200
+            else:
+                return {'payer_id': None}, 404
+
+    def delete(self, payer_id):
+        for payer in payers:
+            if payer['payer_id'] == payer_id:
+                payers.remove(payer)
+                return {'payer_id': payer_id, 'deleted': True}, 200
+            else:
+                return {'payer_id': None}, 404
 
 
-@app.route('/payer', methods=['POST'])
-def add_payer():
-    payers.append(request.get_json())
-    return f'Payer added {request.get_json()}'
+class PayerList(Resource):
+    def get(self):
+        return {'payers': payers}, 200
 
 
-@app.route('/payer', methods=['DELETE'])
-def remove_payer():
-    payer_id = request.get_json()['payer_id']
-    for payer in payers:
-        if payer['payer_id'] == payer_id:
-            payers.remove(payer)
-            return f'Payer {payer_id} removed'
-        else:
-            return f'Payer {payer_id} not found'
+api.add_resource(Payer, '/payer')
+api.add_resource(PayerModify, '/payer/<int:payer_id>')
+api.add_resource(PayerList, '/payers')
 
-
-app.run(port=5000)
+app.run(port=5000, debug=True)
