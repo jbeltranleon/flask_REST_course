@@ -14,7 +14,8 @@ payers = []
 # Resource: Represents Entities
 class Payer(Resource):
     def post(self):
-        payers.append(request.get_json())
+        # If request.get_json is null return none using silent
+        payers.append(request.get_json(silent=True))
         return request.get_json(), 201
 
 
@@ -27,11 +28,11 @@ class PayerModify(Resource):
                 return {'payer_id': None}, 404
 
     def put(self, payer_id):
-        payer_id = request.get_json()['payer_id']
+        request_payer = request.get_json()
         for payer in payers:
             if payer['payer_id'] == payer_id:
                 payers.remove(payer)
-                payers.append(payer)
+                payers.append(request_payer)
                 return {'payer_id': payer_id, 'updated': True}, 200
             else:
                 return {'payer_id': None}, 404
