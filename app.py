@@ -21,34 +21,30 @@ class Payer(Resource):
 
 class PayerModify(Resource):
     def get(self, payer_id):
-        for payer in payers:
-            if payer['payer_id'] == payer_id:
-                return payer
-            else:
-                return {'payer_id': None}, 404
+        # Next give us the first item on the filter object, or return none
+        payer = get_payer(payer_id)
+        return payer, 200 if payer is not None else {'payer_id': None}, 404
 
     def put(self, payer_id):
         request_payer = request.get_json()
-        for payer in payers:
-            if payer['payer_id'] == payer_id:
-                payers.remove(payer)
-                payers.append(request_payer)
-                return {'payer_id': payer_id, 'updated': True}, 200
-            else:
-                return {'payer_id': None}, 404
+        payer = get_payer(payer_id)
+        payers.remove(payer)
+        payers.append(request_payer)
+        return {'payer_id': payer_id, 'updated': True}, 200 if payer is not None else {'payer_id': None}, 404
 
     def delete(self, payer_id):
-        for payer in payers:
-            if payer['payer_id'] == payer_id:
-                payers.remove(payer)
-                return {'payer_id': payer_id, 'deleted': True}, 200
-            else:
-                return {'payer_id': None}, 404
+        payer = get_payer(payer_id)
+        payers.remove(payer)
+        return {'payer_id': payer_id, 'deleted': True}, 200 if payer is not None else {'payer_id': None}, 404
 
 
 class PayerList(Resource):
     def get(self):
         return {'payers': payers}, 200
+
+
+def get_payer(payer_id):
+    return next(filter(lambda x: x['payer_id'] == payer_id, payers), None)
 
 
 api.add_resource(Payer, '/payer')
