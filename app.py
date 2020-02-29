@@ -1,11 +1,16 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
+from flask_jwt import JWT, jwt_required
+from .security import authenticate, identity
 
 # Using __name__ we give a unique name to our Flask app
-app = Flask(__name__)
+app = Flask(import_name=__name__)
 
 # Make the development process easier
-api = Api(app)
+api = Api(app=app)
+
+# JWT configuration
+jwt = JWT(app=app, authentication_handler=authenticate, identity_handler=identity)  # /auth
 
 # The payer storage
 payers = []
@@ -42,6 +47,7 @@ class PayerModify(Resource):
 
 
 class PayerList(Resource):
+    @jwt_required()
     def get(self):
         return {'payers': payers}, 200
 
