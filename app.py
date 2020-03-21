@@ -1,10 +1,11 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_jwt import JWT, jwt_required
-from .security import authenticate, identity
+from security import authenticate, identity
 
 # Using __name__ we give a unique name to our Flask app
 app = Flask(import_name=__name__)
+app.secret_key = 'this_should_be_secret'
 
 # Make the development process easier
 api = Api(app=app)
