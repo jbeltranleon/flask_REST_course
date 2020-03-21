@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
 
@@ -35,7 +35,12 @@ class Payer(Resource):
         return payer, 200 if payer else 404
 
     def put(self, payer_id):
-        request_payer = request.get_json()
+        parser = reqparse.RequestParser()
+        parser.add_argument('extra_data',
+                            type=str,
+                            required=True,
+                            help='This field can not be blank!')
+        request_payer = parser.parse_args()
         payer = get_payer(payer_id)
         if payer:
             payer.update(request_payer)
