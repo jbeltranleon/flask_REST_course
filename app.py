@@ -37,8 +37,8 @@ class Payer(Resource):
     def put(self, payer_id):
         request_payer = request.get_json()
         payer = get_payer(payer_id)
-        payers.remove(payer)
-        payers.append(request_payer)
+        if payer:
+            payer.update(request_payer)
         return {'payer_id': payer_id, 'updated': True}, 200 if payer else 404
 
     def delete(self, payer_id):
