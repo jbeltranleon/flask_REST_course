@@ -32,23 +32,23 @@ class PayerModify(Resource):
     def get(self, payer_id):
         # Next give us the first item on the filter object, or return none
         payer = get_payer(payer_id)
-        return payer, 200 if payer else {'payer_id': None}, 404
+        return payer, 200 if payer else 404
 
     def put(self, payer_id):
         request_payer = request.get_json()
         payer = get_payer(payer_id)
         payers.remove(payer)
         payers.append(request_payer)
-        return {'payer_id': payer_id, 'updated': True}, 200 if payer else {'payer_id': None}, 404
+        return {'payer_id': payer_id, 'updated': True}, 200 if payer else 404
 
     def delete(self, payer_id):
         payer = get_payer(payer_id)
         payers.remove(payer)
-        return {'payer_id': payer_id, 'deleted': True}, 200 if payer else {'payer_id': None}, 404
+        return {'payer_id': payer_id, 'deleted': True}, 200 if payer else 404
 
 
 class PayerList(Resource):
-    @jwt_required()
+    #@jwt_required()
     def get(self):
         return {'payers': payers}, 200
 
