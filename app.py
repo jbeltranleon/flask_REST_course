@@ -18,7 +18,7 @@ payers = []
 
 
 # Resource: Represents Entities
-class Payer(Resource):
+class PayerCreation(Resource):
     def post(self):
         payer_id = request.get_json()['payer_id']
         if get_payer(payer_id):
@@ -28,7 +28,7 @@ class Payer(Resource):
         return request.get_json(), 201
 
 
-class PayerModify(Resource):
+class Payer(Resource):
     def get(self, payer_id):
         # Next give us the first item on the filter object, or return none
         payer = get_payer(payer_id)
@@ -57,8 +57,8 @@ def get_payer(payer_id):
     return next(filter(lambda x: x['payer_id'] == payer_id, payers), None)
 
 
-api.add_resource(Payer, '/payer')
-api.add_resource(PayerModify, '/payer/<int:payer_id>')
+api.add_resource(PayerCreation, '/payer')
+api.add_resource(Payer, '/payer/<int:payer_id>')
 api.add_resource(PayerList, '/payers')
 
 app.run(port=5000, debug=True)
