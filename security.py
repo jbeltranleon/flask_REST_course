@@ -1,20 +1,13 @@
-from user import User
+from user_manager import find_by_id, find_by_username
 from werkzeug.security import safe_str_cmp
-
-users = [
-    User(1, 'jhon', '123')
-]
-
-username_mapping = {u.username: u for u in users}
-user_id_mapping = {u.id: u for u in users}
 
 
 def authenticate(username, password):
-    user = username_mapping.get(username, None)
+    user = find_by_username(username)
     if user and safe_str_cmp(user.password, password):
         return user
 
 
 def identity(payload):
     user_id = payload['identity']
-    return user_id_mapping.get(user_id, None)
+    return find_by_id(user_id)

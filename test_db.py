@@ -5,11 +5,11 @@ connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 
 # Create Table
-create_table = 'CREATE TABLE IF NOT EXISTS users (id int, username text, password text)'
+create_table = 'CREATE TABLE IF NOT EXISTS user (id int, username text, password text)'
 cursor.execute(create_table)
 
 
-insert_query = 'INSERT INTO users VALUES (?, ?, ?)'
+insert_query = 'INSERT INTO user VALUES (?, ?, ?)'
 
 # Add row
 user = (1, 'jhon', '123')
@@ -26,7 +26,7 @@ cursor.executemany(insert_query, users)
 connection.commit()
 
 # Select
-select_query = 'SELECT * FROM users'
+select_query = 'SELECT * FROM user'
 
 for row in cursor.execute(select_query):
     print(row)

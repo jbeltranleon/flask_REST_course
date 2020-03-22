@@ -57,7 +57,7 @@ class Payer(Resource):
 
 
 class Payers(Resource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         return {'payers': payers}, 200
 
