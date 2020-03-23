@@ -36,12 +36,22 @@ class PayerResource(Resource):
         request_payer = PayerResource.parser.parse_args()
         payer = find_by_id(payer_id)
         if payer:
-            update(payer_id, request_payer['extra_data'])
-            return {'payer_id': payer_id, 'extra_data': request_payer['extra_data'], 'updated': True}, 200
+            try:
+                update(payer_id, request_payer['extra_data'])
+                return {'payer_id': payer_id,
+                        'extra_data': request_payer['extra_data'],
+                        'updated': True}, 200
+            except:
+                return {'message': 'An error has occurred'}, 400
+
         return {'message': f'payer {payer_id} not found'}, 404
 
     def delete(self, payer_id):
         payer = find_by_id(payer_id)
         if payer:
-            delete(payer_id)
+            try:
+                delete(payer_id)
+            except:
+                return {'message': 'An error has occurred'}, 400
+
         return {'payer_id': payer_id, 'deleted': True}, 200 if payer else 404
