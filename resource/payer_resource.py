@@ -42,9 +42,9 @@ class PayerResource(Resource):
                         'extra_data': request_payer['extra_data'],
                         'updated': True}, 200
             except:
-                return {'message': 'An error has occurred'}, 400
+                return {'message': 'An error has occurred'}, 500
 
-        return {'message': f'payer {payer_id} not found'}, 404
+        return {'message': f'payer {payer_id} not found'}, 500
 
     def delete(self, payer_id):
         payer = find_by_id(payer_id)
