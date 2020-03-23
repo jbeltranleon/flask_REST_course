@@ -39,3 +39,12 @@ def find_by_id(_id):
     connection.close()
 
     return user
+
+
+def create(user):
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    create_user = 'INSERT INTO user (username, password) VALUES (?, ?)'
+    cursor.execute(create_user, (user['username'], user['password']))
+    connection.commit()
+    connection.close()
