@@ -2,7 +2,8 @@
 from flask import request
 from flask_restful import Resource, reqparse
 
-from payer_manager import find_by_id, create, delete, update
+from payer import Payer
+from payer_manager import find_by_id, save, delete
 
 
 class PayerResource(Resource):
@@ -22,7 +23,7 @@ class PayerResource(Resource):
         if find_by_id(payer_id):
             return {'message': f'the payer_id {payer_id} already exist'}, 400
         # If request.get_json is null return none using silent
-        create(payer)
+        save(Payer(payer['payer_id'], payer['extra_data']))
         return request.get_json(), 201
 
     def get(self, payer_id):
@@ -37,12 +38,17 @@ class PayerResource(Resource):
         payer = find_by_id(payer_id)
         if payer:
             try:
-                update(payer_id, request_payer['extra_data'])
+                payer.extra_data = request_payer['extra_data']
+                save(payer)
                 return {'payer_id': payer_id,
                         'extra_data': request_payer['extra_data'],
                         'updated': True}, 200
             except:
                 return {'message': 'An error has occurred'}, 500
+            # update(Payer(request_payer['payer_id'], request_payer['extra_data']))
+            return {'payer_id': payer_id,
+                    'extra_data': request_payer['extra_data'],
+                    'updated': True}, 200
 
         return {'message': f'payer {payer_id} not found'}, 500
 
@@ -50,7 +56,7 @@ class PayerResource(Resource):
         payer = find_by_id(payer_id)
         if payer:
             try:
-                delete(payer_id)
+                delete(payer)
             except:
                 return {'message': 'An error has occurred'}, 400
 

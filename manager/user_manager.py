@@ -1,50 +1,15 @@
-import sqlite3
-
+from db import db
 from user import User
 
 
 def find_by_username(username):
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-
-    query = 'SELECT * from user WHERE username = ?'
-    result = cursor.execute(query, (username,))
-
-    row = result.fetchone()
-
-    if row:
-        user = User(*row)
-    else:
-        user = None
-
-    connection.close()
-
-    return user
+    return User.query.filter_by(username=username).first()
 
 
 def find_by_id(_id):
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-
-    query = 'SELECT * from user WHERE id = ?'
-    result = cursor.execute(query, (_id,))
-
-    row = result.fetchone()
-
-    if row:
-        user = User(*row)
-    else:
-        user = None
-
-    connection.close()
-
-    return user
+    return User.query.filter_by(id=_id).first()
 
 
-def create(user):
-    connection = sqlite3.connect('database.db')
-    cursor = connection.cursor()
-    create_user = 'INSERT INTO user (username, password) VALUES (?, ?)'
-    cursor.execute(create_user, (user['username'], user['password']))
-    connection.commit()
-    connection.close()
+def save(user):
+    db.session.add(user)
+    db.session.commit()
