@@ -2,6 +2,7 @@ import sqlite3
 
 from flask_restful import Resource, reqparse
 
+from user import User
 from user_manager import find_by_username, save
 
 
@@ -18,6 +19,6 @@ class UserResource(Resource):
         if find_by_username(user['username']):
             return {'message': 'the user already exist'}, 400
 
-        save(user)
+        save(User(**user))
 
         return {'message': 'user created successfully'}, 201

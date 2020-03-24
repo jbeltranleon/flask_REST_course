@@ -1,4 +1,3 @@
-import sqlite3
 from db import db
 from payer import Payer
 
@@ -9,6 +8,10 @@ def find_by_id(_id):
 
 def find_all():
     return Payer.query.all()
+
+
+def find_all_json():
+    return [payer.to_json() for payer in find_all()]
 
 
 def save(payer):

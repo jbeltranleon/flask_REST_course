@@ -2,6 +2,8 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
+from merchant_resource import MerchantResource
+from merchants_resource import MerchantsResource
 from payer_resource import PayerResource
 from payers_resource import PayersResource
 from user_resource import UserResource
@@ -23,12 +25,16 @@ api = Api(app=app)
 def create_tables():
     db.create_all()
 
+
 # JWT configuration
 jwt = JWT(app=app, authentication_handler=authenticate, identity_handler=identity)  # /auth
 
 api.add_resource(PayerResource, '/payer', endpoint='add_payer')
 api.add_resource(PayerResource, '/payer/<int:payer_id>', endpoint='get_or_modify_payer')
 api.add_resource(PayersResource, '/payers')
+api.add_resource(MerchantResource, '/merchant', endpoint='add_merchant')
+api.add_resource(MerchantResource, '/merchant/<string:name>', endpoint='get_or_merchant')
+api.add_resource(MerchantsResource, '/merchants')
 api.add_resource(UserResource, '/register')
 
 if __name__ == '__main__':
