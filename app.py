@@ -18,6 +18,11 @@ app.secret_key = 'this_should_be_secret'
 # Make the development process easier
 api = Api(app=app)
 
+# Create tables
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 # JWT configuration
 jwt = JWT(app=app, authentication_handler=authenticate, identity_handler=identity)  # /auth
 
