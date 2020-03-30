@@ -26,5 +26,5 @@ def save(payer):
 
 
 def delete(payer):
-    db.session.add(payer)
+    db.session.delete(payer)
     db.session.commit()

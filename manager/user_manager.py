@@ -11,5 +11,5 @@ def find_by_id(_id):
 
 
 def save(user):
-    db.session.add(user)
+    db.session.delete(user)
     db.session.commit()
